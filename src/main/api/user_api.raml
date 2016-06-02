@@ -1,0 +1,47 @@
+#%RAML 1.0
+---
+title: User Resource API
+version: 1.0.development
+baseUri: http://lpv-ideadev02:8080/jaxrs-example/api/userResource
+protocols: [HTTP]
+mediaType: application/json
+documentation:   
+  - title: Home
+    content: |
+      This is the UserResource manager API docucumentation.  This api allows you
+      to add, update and perform other operations on the User API.
+types:
+  User:
+    type: object
+    properties:
+      firstname: string
+      lastname: string
+      id: 
+        type: integer
+        required: false
+  Firstname:
+    type: string
+  Lastname:
+    type: string  
+/users:
+  get:
+    description: get all users in a collection
+    responses: 
+      200:
+        body:
+          application/json: 
+            type: User[]
+  post:
+    description: add user to collection
+    body:           
+    #queryParameters: 
+    #  firstname: string
+    #  lastname: string      
+      type:         
+        properties: 
+          firstname:
+            type: string
+            required: true                      
+          lastname: 
+            type: string
+            required: true                          
