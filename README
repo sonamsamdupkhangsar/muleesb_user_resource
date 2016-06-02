@@ -1,0 +1,3 @@
+This is my Mule project for managing User resource.
+
+This project uses RAML 1.0 for building the front end with APIKit module. This project is built using Anypoint Studio 6.0.0 and runs on the Mule runtime 3.8.0 EE.
