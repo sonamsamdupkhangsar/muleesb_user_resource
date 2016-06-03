@@ -48,7 +48,7 @@ payload]]></dw:set-payload>
     <flow name="post:/users:application/json:user_api-config">
         <logger message="got request to add #[message.payloadAs(java.lang.String)] " level="INFO" doc:name="Logger"/>
         <json:json-to-object-transformer returnClass="java.util.HashMap" doc:name="JSON to Object"/>
-        <set-payload value="#[{'firstname': message.payload.firstname, 'lastname': 'wangyal'}]" doc:name="Set Payload"/>
+        <set-payload value="#[{'firstname': message.payload.firstname, 'lastname': message.payload.lastname}]" doc:name="Set Payload"/>
         <logger message="payload is now: #[payload]" level="INFO" doc:name="Logger"/>
         <http:request config-ref="HTTP_Request_Configuration" path="/users" method="POST" doc:name="HTTP"/>
         <logger message="user has been added to applicationsdf" level="INFO" doc:name="Logger"/>
