@@ -11,18 +11,14 @@ documentation:
       This is the UserResource manager API docucumentation.  This api allows you
       to add, update and perform other operations on the User API.
 types:
-  User:
+  User :
     type: object
     properties:
       firstname: string
       lastname: string
       id: 
         type: integer
-        required: false
-  Firstname:
-    type: string
-  Lastname:
-    type: string  
+        required: false  
 /users:
   get:
     description: get all users in a collection
@@ -31,17 +27,43 @@ types:
         body:
           application/json: 
             type: User[]
+  /{id}:
+    get:
+      responses: 
+        200:
+          body:
+            application/json:
+              type: User   
+    delete:
+    head: 
+  put:
+      description: update user
+      body:
+        type: User 
+                
+                
   post:
     description: add user to collection
     body:           
     #queryParameters: 
     #  firstname: string
     #  lastname: string      
-      type:         
-        properties: 
-          firstname:
-            type: string
-            required: true                      
-          lastname: 
-            type: string
-            required: true                          
+      type: User      
+    responses: 
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "id": 1,
+                "firstname: "Hannah",
+                "lastname": "Banana"
+              }
+      500:
+        body:
+          application/json:
+            example: |
+              {
+                "error": "The user cannot be saved"
+              }
+              

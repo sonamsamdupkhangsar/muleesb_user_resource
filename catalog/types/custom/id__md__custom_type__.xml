@@ -1,8 +1,8 @@
 <custom__type__definition>
   <version>5.2.0.0</version>
   <typeName class="org.mule.common.metadata.DefaultMetaDataKey">
-    <id>lastname</id>
-    <displayName>lastname</displayName>
+    <id>id</id>
+    <displayName>id</displayName>
     <category>DEFAULT</category>
     <metaDataKeyPropertiesManager>
       <properties>
@@ -11,7 +11,7 @@
     </metaDataKeyPropertiesManager>
   </typeName>
   <metadataModel class="org.mule.common.metadata.DefaultSimpleMetaDataModel">
-    <dataType>STRING</dataType>
+    <dataType>LONG</dataType>
     <metaDataModelPropertiesManager>
       <properties/>
     </metaDataModelPropertiesManager>

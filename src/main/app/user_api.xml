@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
@@ -8,10 +8,11 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
     <http:listener-config name="user_api-httpListenerConfig" host="0.0.0.0" port="8081" doc:name="HTTP Listener Configuration" />
     <apikit:config name="user_api-config" raml="user_api.raml" consoleEnabled="true" consolePath="console" doc:name="Router" />
     <http:request-config name="HTTP_Request_Configuration" host="lpv-ideadev02" port="8080" basePath="/jaxrs-example/api/userResource" doc:name="HTTP Request Configuration">
-        <http:raml-api-configuration location="user_api.raml" />
+        <http:raml-api-configuration location="user_api.raml"/>
+
     </http:request-config>
     <http:request-builder name="Request_Builder" doc:name="Request Builder">
-        <http:query-param paramName="dffd" value="#[payload.firstName]"/>
+        <http:query-param paramName="dffd" value="#[payload.firstName]" />
     </http:request-builder>
     <flow name="user_api-main">
         <http:listener config-ref="user_api-httpListenerConfig" path="/api/*" doc:name="HTTP" />
@@ -29,36 +30,71 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
 payload]]></dw:set-payload>
         </dw:transform-message>
     </flow>
-    <flow name="get:/users/{id}:user_api-config">
-        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload" />
-    </flow>
-    <flow name="post:/users:user_api-config">
-        <logger message="got request to add user hello" level="INFO" doc:name="Logger" />
-        <set-payload value="#[{'firstname': 'sonam', 'lastname': 'wangyal'}]" doc:name="Set Payload firstname and lastname"/>
-        <http:request config-ref="HTTP_Request_Configuration" path="/users" method="POST" doc:name="HTTP" />
-        <logger message="user has been added to applicationsdf" level="INFO" doc:name="Logger" />
-        <dw:transform-message doc:name="Transform Message">
-            <dw:set-payload><![CDATA[%dw 1.0
-%output application/java
----
-{
-}]]></dw:set-payload>
-        </dw:transform-message>
-    </flow>
     <flow name="post:/users:application/json:user_api-config">
-        <logger message="got request to add #[message.payloadAs(java.lang.String)] " level="INFO" doc:name="Logger"/>
-        <json:json-to-object-transformer returnClass="java.util.HashMap" doc:name="JSON to Object"/>
-        <set-payload value="#[{'firstname': message.payload.firstname, 'lastname': message.payload.lastname}]" doc:name="Set Payload"/>
-        <logger message="payload is now: #[payload]" level="INFO" doc:name="Logger"/>
-        <http:request config-ref="HTTP_Request_Configuration" path="/users" method="POST" doc:name="HTTP"/>
-        <logger message="user has been added to applicationsdf" level="INFO" doc:name="Logger"/>
-        <dw:transform-message doc:name="Copy_of_Transform Message">
+        <logger message="got request to add #[message.payloadAs(java.lang.String)] , firstname: #[payload.firstname], message payload : #[payload]" level="INFO" doc:name="Logger" />
+        <dw:transform-message metadata:id="dff351f0-8de3-442a-9f30-0208cdce4b0f" doc:name="Transform Message">
+            <dw:input-payload doc:sample="sample_data\kkj.dwl" />
             <dw:set-payload><![CDATA[%dw 1.0
 %output application/java
 ---
 {
+	firstname: payload.firstname,
+	lastname: payload.lastname
 }]]></dw:set-payload>
         </dw:transform-message>
+        <set-payload value="#[{'firstname': payload.firstname, 'lastname': payload.lastname}]" doc:name="Set Payload" />
+        <http:request config-ref="HTTP_Request_Configuration" path="/users" method="POST" doc:name="HTTP" />
+        <dw:transform-message metadata:id="91eb0843-9559-41f5-81b4-439419aee01d" doc:name="Transform Message">
+            <dw:input-payload doc:sample="sample_data\long.dwl" />
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+---
+payload]]></dw:set-payload>
+        </dw:transform-message>
+        <logger message="user has been added , id generated #[payload.id]" level="INFO" doc:name="Logger" />
+    </flow>
+    <flow name="get:/users/{id}:user_api-config">
+        <logger message="retrieve User with user id : #[flowVars.id]" level="INFO" doc:name="Logger" />
+        <http:request config-ref="HTTP_Request_Configuration" path="/users/{id}" method="GET" doc:name="HTTP">
+            <http:request-builder>
+                <http:uri-param paramName="id" value="#[flowVars.id]" />
+            </http:request-builder>
+        </http:request>
+        <logger message="retrieved user: firstname:  #[payload.firstname], lastname: #[payload.lastname], id: #[payload.id]" level="INFO" doc:name="Logger" />
+    </flow>
+    <flow name="delete:/users/{id}:user_api-config">
+        <logger message="request for deleting user with id #[flowVars.id]" level="INFO" doc:name="Logger" />
+        <http:request config-ref="HTTP_Request_Configuration" path="/users/{id}" method="DELETE" doc:name="HTTP">
+            <http:request-builder>
+                <http:uri-param paramName="id" value="#[flowVars.id]" />
+            </http:request-builder>
+        </http:request>
+        <logger message="user id has been deleted." level="INFO" doc:name="Logger" />
+    </flow>
+    <flow name="put:/users:application/json:user_api-config">
+        <logger message="update user resource" level="INFO" doc:name="Logger" />
+        <dw:transform-message metadata:id="a9020621-7693-43ea-a8ef-9218a1ac1d10" doc:name="Transform Message">
+            <dw:input-payload />
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+---
+{
+	id: payload.id,
+	firstname: payload.firstname,
+	lastname: payload.lastname
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <set-payload value="#[{'id': payload.id, 'firstname': payload.firstname, 'lastname': payload.lastname}]" doc:name="Set Payload" />
+        <http:request config-ref="HTTP_Request_Configuration" path="/users" method="PUT" doc:name="HTTP" />
+        <logger message="user has been updated" level="INFO" doc:name="Logger" />
+    </flow>
+    <flow name="head:/users/{id}:user_api-config">
+        <logger message="head request" level="INFO" doc:name="Logger"/>
+        <http:request config-ref="HTTP_Request_Configuration" path="/users/{id}" method="HEAD" doc:name="HTTP">
+            <http:request-builder>
+                <http:uri-param paramName="id" value="#[flowVars.id]"/>
+            </http:request-builder>
+        </http:request>
 
     </flow>
     <apikit:mapping-exception-strategy name="user_api-apiKitGlobalExceptionMapping">

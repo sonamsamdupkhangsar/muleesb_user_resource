@@ -3,4 +3,5 @@
     <name>user_resource</name>
     <description></description>
     <muleExtension name="Amazon SQS" qualifier="org.mule.tooling.ui.contribution.sqs.3.5.0"/>
+    <muleExtension name="CMIS" qualifier="org.mule.tooling.ui.contribution.cmis.3.5.0"/>
 </mule-project>

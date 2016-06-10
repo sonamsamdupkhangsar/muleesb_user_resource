@@ -1,0 +1,13 @@
+{
+    "inputMessageMetadata": {
+        "messagePayload": {}
+    },
+    "outputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "HTTP_Request_Configuration",
+            "typeId": "POST:/users_request"
+        }
+    },
+    "id": "16fd62ee-d972-4c64-a743-a46b8521b537",
+    "version": "5.2.0.0"
+}
